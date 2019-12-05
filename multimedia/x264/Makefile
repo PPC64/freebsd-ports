@@ -44,19 +44,16 @@ X264_GITVER=	${X264_COMMIT:C/^(.......).*$/\1/g}
 X264_SNAPSHOT=	20190719
 
 USES?=		pkgconfig
-USES+=		gmake localbase shebangfix tar:bzip2
+USES+=		compiler:c11 gmake localbase shebangfix tar:bzip2
 USE_LDCONFIG=	yes
 HAS_CONFIGURE=	yes
 SHEBANG_FILES=	configure
 PLIST_FILES?=	bin/x264
 
-OPTIONS_DEFINE+=	DEBUG FFMS GCC LAVF PGO SWSCALE
+OPTIONS_DEFINE+=	DEBUG FFMS LAVF PGO SWSCALE
 OPTIONS_RADIO+=		MP4
 OPTIONS_RADIO_MP4+=	GPAC LSMASH
 OPTIONS_DEFAULT+=	FFMS LAVF LSMASH SWSCALE
-OPTIONS_DEFAULT_powerpc=	GCC
-OPTIONS_DEFAULT_powerpc64=	GCC
-OPTIONS_DEFAULT_powerpcspe=	GCC
 
 FFMS_DESC=		FFmpeg Source input support
 GPAC_DESC=		GPAC library support
@@ -71,8 +68,6 @@ DEBUG_CONFIGURE_OFF=	--enable-strip
 FFMS_LIB_DEPENDS=	libffms2.so:multimedia/ffms2
 FFMS_CONFIGURE_ENABLE=	ffms
 FFMS_IMPLIES=		SWSCALE
-
-GCC_VARS=		USE_GCC=yes
 
 GPAC_LIB_DEPENDS=	libgpac.so:multimedia/gpac-libgpac
 GPAC_CONFIGURE_ENABLE=	gpac
@@ -92,8 +87,7 @@ PGO_ALL_TARGET=		fprofiled
 # y4m sample video
 Y4M_VIDEO=		example.y4m
 Y4M_VIDEO_DISTFILE=	example.y4m.bz2
-PGO_VARS=		USE_GCC=any \
-			RESTRICTED="${Y4M_VIDEO_DISTFILE} file may not be mirrored" \
+PGO_VARS=		RESTRICTED="${Y4M_VIDEO_DISTFILE} file may not be mirrored" \
 			RESTRICTED_FILES="${Y4M_VIDEO_DISTFILE}"
 
 SWSCALE_LIB_DEPENDS=	libavutil.so:multimedia/ffmpeg \
@@ -104,6 +98,8 @@ CONFIGURE_ARGS?=	--system-libx264
 CONFIGURE_ARGS+=	--prefix="${PREFIX}" \
 			--extra-cflags="${CPPFLAGS} ${CFLAGS}" \
 			--extra-ldflags="${LDFLAGS}"
+
+.include <bsd.port.pre.mk>
 
 post-extract-PGO-on:
 	@${BZIP2_CMD} -dc ${DISTDIR}/${DIST_SUBDIR}/${Y4M_VIDEO_DISTFILE} \
@@ -124,4 +120,4 @@ pre-build:
 	@(${RM} ${WRKSRC}/x264_config.h)
 .endif
 
-.include <bsd.port.mk>
+.include <bsd.port.post.mk>
