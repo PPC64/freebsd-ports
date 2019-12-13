@@ -87,7 +87,8 @@ PGO_ALL_TARGET=		fprofiled
 # y4m sample video
 Y4M_VIDEO=		example.y4m
 Y4M_VIDEO_DISTFILE=	example.y4m.bz2
-PGO_VARS=		RESTRICTED="${Y4M_VIDEO_DISTFILE} file may not be mirrored" \
+PGO_VARS=		USE_GCC=any \
+			RESTRICTED="${Y4M_VIDEO_DISTFILE} file may not be mirrored" \
 			RESTRICTED_FILES="${Y4M_VIDEO_DISTFILE}"
 
 SWSCALE_LIB_DEPENDS=	libavutil.so:multimedia/ffmpeg \
